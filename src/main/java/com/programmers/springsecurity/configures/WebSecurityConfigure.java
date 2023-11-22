@@ -19,10 +19,9 @@ public class WebSecurityConfigure {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .requestMatchers("/me").hasAnyRole("USER", "ADMIN")
-                .anyRequest().permitAll()
-                .and()
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/me").hasAnyRole("USER", "ADMIN")
+                        .anyRequest().permitAll())
                 .formLogin(login -> login
                         .defaultSuccessUrl("/")
                         .permitAll());

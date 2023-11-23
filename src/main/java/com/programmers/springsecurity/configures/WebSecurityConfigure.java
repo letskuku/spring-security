@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +45,15 @@ public class WebSecurityConfigure {
                         .anyRequest().permitAll())
                 .formLogin(login -> login
                         .defaultSuccessUrl("/")
-                        .permitAll());
+                        .permitAll())
+                .rememberMe(remember -> remember
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(300))
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true));
         return http.build();
     }
 }

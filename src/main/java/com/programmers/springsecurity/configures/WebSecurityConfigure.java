@@ -53,7 +53,10 @@ public class WebSecurityConfigure {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .clearAuthentication(true));
+                        .clearAuthentication(true))
+                .requiresChannel(require -> require
+                        .anyRequest()
+                        .requiresSecure());
         return http.build();
     }
 }

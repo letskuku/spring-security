@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -83,6 +84,12 @@ public class WebSecurityConfigure {
                 .requiresChannel(require -> require
                         .anyRequest()
                         .requiresSecure())
+                .sessionManagement(session -> session
+                        .sessionFixation().changeSessionId()
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .invalidSessionUrl("/")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false))
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler()));
         return http.build();

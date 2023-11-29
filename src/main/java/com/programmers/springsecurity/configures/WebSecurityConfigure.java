@@ -45,7 +45,8 @@ public class WebSecurityConfigure {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/assets/**");
+        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/assets/**"))
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
     }
 
     @Bean
@@ -83,8 +84,8 @@ public class WebSecurityConfigure {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/me").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/admin").access(
+                        .requestMatchers(new AntPathRequestMatcher("/me")).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(new AntPathRequestMatcher("/admin")).access(
                                 new WebExpressionAuthorizationManager("isFullyAuthenticated() and hasRole('ADMIN')")
                         )
                         .anyRequest().permitAll())

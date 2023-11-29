@@ -1,4 +1,4 @@
-package com.programmers.springsecurity.configures;
+package com.example.springsecurity.configures;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

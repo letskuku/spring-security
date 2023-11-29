@@ -1,4 +1,4 @@
-package com.programmers.springsecurity.configures;
+package com.example.springsecurity.configures;
 
 import net.sf.log4jdbc.Log4jdbcProxyDataSource;
 import org.springframework.beans.BeansException;

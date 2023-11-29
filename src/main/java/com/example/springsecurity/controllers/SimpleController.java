@@ -1,6 +1,6 @@
-package com.programmers.springsecurity.controllers;
+package com.example.springsecurity.controllers;
 
-import com.programmers.springsecurity.services.SimpleService;
+import com.example.springsecurity.services.SimpleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;

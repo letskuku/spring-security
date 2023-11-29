@@ -1,4 +1,4 @@
-package com.programmers.springsecurity.services;
+package com.example.springsecurity.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

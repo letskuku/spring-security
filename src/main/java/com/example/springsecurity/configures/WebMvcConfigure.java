@@ -1,4 +1,4 @@
-package com.programmers.springsecurity.configures;
+package com.example.springsecurity.configures;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;

@@ -46,14 +46,8 @@ spring:
       data-locations: classpath:sql/data_new.sql
       encoding: UTF-8
       mode: always
-
-server:
-  port: 443
-  ssl:
-    enabled: true
-    key-alias: prgrms_keystore
-    key-store: classpath:prgrms_keystore.p12
-    key-store-password: programmers
-    key-password: programmers
-    trust-store: classpath:prgrms_truststore.p12
-    trust-store-password: programmers
+jwt:
+  header: token
+  issuer: letskuku
+  client-secret: EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ
+  expiry-seconds: 60

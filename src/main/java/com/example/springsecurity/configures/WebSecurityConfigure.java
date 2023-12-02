@@ -1,5 +1,6 @@
 package com.example.springsecurity.configures;
 
+import com.example.springsecurity.jwt.Jwt;
 import com.example.springsecurity.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -28,7 +29,14 @@ public class WebSecurityConfigure {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    private JwtConfigure jwtConfigure;
+
     private UserService userService;
+
+    @Autowired
+    public void setJwtConfigure(JwtConfigure jwtConfigure) {
+        this.jwtConfigure = jwtConfigure;
+    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -46,11 +54,6 @@ public class WebSecurityConfigure {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, e) -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,6 +65,20 @@ public class WebSecurityConfigure {
             response.getWriter().flush();
             response.getWriter().close();
         };
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public Jwt jwt() {
+        return new Jwt(
+                jwtConfigure.getIssuer(),
+                jwtConfigure.getClientSecret(),
+                jwtConfigure.getExpirySeconds()
+        );
     }
 
     @Bean

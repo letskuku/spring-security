@@ -1,6 +1,7 @@
 package com.example.springsecurity.configures;
 
 import com.example.springsecurity.jwt.Jwt;
+import com.example.springsecurity.jwt.JwtAuthenticationFilter;
 import com.example.springsecurity.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -29,9 +31,16 @@ public class WebSecurityConfigure {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    private UserService userService;
+
     private JwtConfigure jwtConfigure;
 
-    private UserService userService;
+    private Jwt jwt;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Autowired
     public void setJwtConfigure(JwtConfigure jwtConfigure) {
@@ -39,8 +48,8 @@ public class WebSecurityConfigure {
     }
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setJwt(Jwt jwt) {
+        this.jwt = jwt;
     }
 
     @Bean
@@ -72,13 +81,8 @@ public class WebSecurityConfigure {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public Jwt jwt() {
-        return new Jwt(
-                jwtConfigure.getIssuer(),
-                jwtConfigure.getClientSecret(),
-                jwtConfigure.getExpirySeconds()
-        );
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtConfigure.getHeader(), jwt);
     }
 
     @Bean
@@ -96,7 +100,8 @@ public class WebSecurityConfigure {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(accessDeniedHandler()));
+                        .accessDeniedHandler(accessDeniedHandler()))
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

@@ -4,6 +4,8 @@ import com.example.springsecurity.jwt.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class JwtConfig {
@@ -22,5 +24,10 @@ public class JwtConfig {
                 jwtConfigure.getClientSecret(),
                 jwtConfigure.getExpirySeconds()
         );
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

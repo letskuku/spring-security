@@ -3,6 +3,7 @@ package com.example.springsecurity.configures;
 import com.example.springsecurity.jwt.Jwt;
 import com.example.springsecurity.jwt.JwtAuthenticationFilter;
 import com.example.springsecurity.jwt.JwtAuthenticationProvider;
+import com.example.springsecurity.jwt.JwtProperties;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +31,12 @@ public class WebSecurityConfigure {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final JwtConfigure jwtConfigure;
+    private final JwtProperties jwtProperties;
 
     private final Jwt jwt;
 
-    public WebSecurityConfigure(JwtConfigure jwtConfigure, Jwt jwt) {
-        this.jwtConfigure = jwtConfigure;
+    public WebSecurityConfigure(JwtProperties jwtProperties, Jwt jwt) {
+        this.jwtProperties = jwtProperties;
         this.jwt = jwt;
     }
 
@@ -69,7 +70,7 @@ public class WebSecurityConfigure {
     }
 
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtConfigure.getHeader(), jwt);
+        return new JwtAuthenticationFilter(jwtProperties.getHeader(), jwt);
     }
 
     @Bean

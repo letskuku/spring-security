@@ -1,49 +1,34 @@
 package com.example.springsecurity.configures;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import com.example.springsecurity.jwt.Jwt;
+import com.example.springsecurity.jwt.JwtProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Component
-@ConfigurationProperties(prefix = "jwt")
+@Configuration
 public class JwtConfigure {
 
-    private String header;
+    private JwtProperties jwtProperties;
 
-    private String issuer;
-
-    private String clientSecret;
-
-    private int expirySeconds;
-
-    public String getHeader() {
-        return header;
+    @Autowired
+    public void setJwtConfigure(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
 
-    public void setHeader(String header) {
-        this.header = header;
+    @Bean
+    public Jwt jwt() {
+        return new Jwt(
+                jwtProperties.getIssuer(),
+                jwtProperties.getClientSecret(),
+                jwtProperties.getExpirySeconds()
+        );
     }
 
-    public String getIssuer() {
-        return issuer;
-    }
-
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
-
-    public int getExpirySeconds() {
-        return expirySeconds;
-    }
-
-    public void setExpirySeconds(int expirySeconds) {
-        this.expirySeconds = expirySeconds;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

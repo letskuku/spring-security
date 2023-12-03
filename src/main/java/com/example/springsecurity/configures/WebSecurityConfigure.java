@@ -1,9 +1,6 @@
 package com.example.springsecurity.configures;
 
-import com.example.springsecurity.jwt.Jwt;
-import com.example.springsecurity.jwt.JwtAuthenticationFilter;
-import com.example.springsecurity.jwt.JwtAuthenticationProvider;
-import com.example.springsecurity.jwt.JwtProperties;
+import com.example.springsecurity.jwt.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -73,6 +71,10 @@ public class WebSecurityConfigure {
         return new JwtAuthenticationFilter(jwtProperties.getHeader(), jwt);
     }
 
+    public SecurityContextRepository securityContextRepository() {
+        return new JwtSecurityContextRepository(jwtProperties.getHeader(), jwt);
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -89,6 +91,8 @@ public class WebSecurityConfigure {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler()))
+                .securityContext(securityContextConfigurer -> securityContextConfigurer
+                        .securityContextRepository(securityContextRepository()))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

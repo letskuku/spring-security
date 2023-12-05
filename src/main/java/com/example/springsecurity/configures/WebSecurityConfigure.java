@@ -1,6 +1,7 @@
 package com.example.springsecurity.configures;
 
 import com.example.springsecurity.jwt.*;
+import com.example.springsecurity.oauth2.OAuth2AuthenticationSuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +57,9 @@ public class WebSecurityConfigure {
         return new JwtAuthenticationFilter(jwtProperties.getHeader(), jwt);
     }
 
-    public SecurityContextRepository securityContextRepository() {
-        return new JwtSecurityContextRepository(jwtProperties.getHeader(), jwt);
+    @Bean
+    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
+        return new OAuth2AuthenticationSuccessHandler();
     }
 
     @Bean
@@ -74,6 +76,8 @@ public class WebSecurityConfigure {
                 .logout(LogoutConfigurer::disable)
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(oauth2LoginConfigurer -> oauth2LoginConfigurer
+                        .successHandler(oAuth2AuthenticationSuccessHandler()))
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler()))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

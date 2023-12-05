@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -35,10 +36,13 @@ public class WebSecurityConfigure {
 
     private final UserService userService;
 
-    public WebSecurityConfigure(JwtProperties jwtProperties, Jwt jwt, UserService userService) {
+    private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
+
+    public WebSecurityConfigure(JwtProperties jwtProperties, Jwt jwt, UserService userService, OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository) {
         this.jwtProperties = jwtProperties;
         this.jwt = jwt;
         this.userService = userService;
+        this.oAuth2AuthorizedClientRepository = oAuth2AuthorizedClientRepository;
     }
 
     @Bean
@@ -91,7 +95,8 @@ public class WebSecurityConfigure {
                 .oauth2Login(oauth2LoginConfigurer -> oauth2LoginConfigurer
                         .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
                                 .authorizationRequestRepository(authorizationRequestRepository()))
-                        .successHandler(oAuth2AuthenticationSuccessHandler()))
+                        .successHandler(oAuth2AuthenticationSuccessHandler())
+                        .authorizedClientRepository(oAuth2AuthorizedClientRepository))
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler()))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

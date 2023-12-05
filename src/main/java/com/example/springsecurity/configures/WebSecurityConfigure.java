@@ -2,6 +2,7 @@ package com.example.springsecurity.configures;
 
 import com.example.springsecurity.jwt.*;
 import com.example.springsecurity.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.example.springsecurity.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,12 @@ public class WebSecurityConfigure {
 
     private final Jwt jwt;
 
-    public WebSecurityConfigure(JwtProperties jwtProperties, Jwt jwt) {
+    private final UserService userService;
+
+    public WebSecurityConfigure(JwtProperties jwtProperties, Jwt jwt, UserService userService) {
         this.jwtProperties = jwtProperties;
         this.jwt = jwt;
+        this.userService = userService;
     }
 
     @Bean
@@ -59,7 +63,7 @@ public class WebSecurityConfigure {
 
     @Bean
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
-        return new OAuth2AuthenticationSuccessHandler();
+        return new OAuth2AuthenticationSuccessHandler(jwt, userService);
     }
 
     @Bean

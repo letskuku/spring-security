@@ -24,6 +24,7 @@ dependencies {
 	implementation 'com.auth0:java-jwt:4.4.0'
 	implementation 'com.zaxxer:HikariCP:4.0.3'
 	implementation 'org.lazyluke:log4jdbc-remix:0.2.7'
+	implementation 'org.apache.commons:commons-lang3:3.14.0'
 
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 

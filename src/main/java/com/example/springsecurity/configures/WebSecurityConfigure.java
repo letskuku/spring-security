@@ -1,6 +1,7 @@
 package com.example.springsecurity.configures;
 
 import com.example.springsecurity.jwt.*;
+import com.example.springsecurity.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.springsecurity.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.example.springsecurity.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -62,6 +65,11 @@ public class WebSecurityConfigure {
     }
 
     @Bean
+    public AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
+    }
+
+    @Bean
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
         return new OAuth2AuthenticationSuccessHandler(jwt, userService);
     }
@@ -81,6 +89,8 @@ public class WebSecurityConfigure {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2LoginConfigurer -> oauth2LoginConfigurer
+                        .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
+                                .authorizationRequestRepository(authorizationRequestRepository()))
                         .successHandler(oAuth2AuthenticationSuccessHandler()))
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler()))

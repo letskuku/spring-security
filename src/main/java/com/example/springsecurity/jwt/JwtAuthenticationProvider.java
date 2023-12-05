@@ -8,11 +8,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final Jwt jwt;

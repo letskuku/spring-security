@@ -19,7 +19,7 @@ public class UserRestController {
      */
     @GetMapping("/user/me")
     public UserDto me(@AuthenticationPrincipal JwtAuthentication authentication) {
-        return userService.findByLoginId(authentication.username)
+        return userService.findByUsername(authentication.username)
                 .map(user ->
                         new UserDto(authentication.token, authentication.username, user.getGroup().getName())
                 )
